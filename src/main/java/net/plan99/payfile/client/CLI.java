@@ -34,6 +34,7 @@ import joptsimple.OptionSet;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.util.List;
@@ -64,7 +65,12 @@ public class CLI {
             // in the checkpoints file and then download the rest from the network. It makes things much faster.
             // Checkpoint files are made using the BuildCheckpoints tool and usually we have to download the
             // last months worth or more (takes a few seconds).
-            appkit.setCheckpoints(getClass().getResourceAsStream("checkpoints"));
+            InputStream inputStream = getClass().getResourceAsStream("checkpoints");
+            if(inputStream != null) {
+                appkit.setCheckpoints(inputStream);
+            }else{
+                throw new IllegalArgumentException("The checkpoints file has to exist. Use the BuildCheckpoints tool to create it.");
+            }
         }
 
         appkit.setBlockingStartup(false)
